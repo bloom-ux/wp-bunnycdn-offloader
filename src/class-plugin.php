@@ -52,6 +52,7 @@ class Plugin {
 	public function init() {
 		$this->attachment_upload_task = new Attachment_Upload_Task();
 		add_filter( 'wp_generate_attachment_metadata', array( $this, 'upload_attachment_files' ), 10, 2 );
+		add_filter( 'wp_update_attachment_metadata', array( $this, 'upload_updated_attachment_files' ), 10, 2 );
 		add_filter( 'wp_get_attachment_url', array( $this, 'filter_attachment_url' ), 10, 2 );
 		add_filter( 'wp_calculate_image_srcset', array( $this, 'filter_srcset_urls' ), 10, 5 );
 		add_action( 'add_attachment', array( $this, 'upload_attachment' ), 10, 1 );
@@ -118,5 +119,17 @@ class Plugin {
 	public function upload_attachment_files( array $metadata, int $attachment_id ): array {
 		$this->attachment_upload_task->data( array( 'attachment_id' => $attachment_id ) )->dispatch();
 		return $metadata;
+	}
+
+	/**
+	 * Upload an updated attachment (ie. after editing an image) to the CDN.
+	 *
+	 * @param array $updated_data  Updated attachment metadata.
+	 * @param int   $attachment_id WordPress attachment ID.
+	 * @return array WordPress attachment metadata
+	 */
+	public function upload_updated_attachment_files( $updated_data, $attachment_id ) {
+		$this->attachment_upload_task->data( array( 'attachment_id' => $attachment_id ) )->dispatch();
+		return $updated_data;
 	}
 }
