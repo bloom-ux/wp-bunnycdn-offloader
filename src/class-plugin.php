@@ -1,11 +1,12 @@
 <?php
 
-namespace Bloom\Bunny_CDN_Offloader;
+namespace Bloom_UX\Bunny_CDN_Offloader;
 
 class Plugin {
 
-
 	/**
+	 * Instance of the attachment upload async task.
+	 *
 	 * @var Attachment_Upload_Task
 	 */
 	private $attachment_upload_task = null;
@@ -17,6 +18,11 @@ class Plugin {
 	 */
 	private $cli;
 
+	/**
+	 * Singleton instance of the plugin.
+	 *
+	 * @var static
+	 */
 	private static $instance = null;
 
 	const UPLOADED_META_KEY = '_bloom_bunny_uploaded';
@@ -25,6 +31,11 @@ class Plugin {
 		$this->attachment_upload_task = new Attachment_Upload_Task();
 	}
 
+	/**
+	 * Get the singleton instance of the plugin.
+	 *
+	 * @return static Instance of the plugin
+	 */
 	public static function get_instance() {
 		if ( is_null( static::$instance ) ) {
 			$classname = get_called_class();
@@ -33,6 +44,11 @@ class Plugin {
 		return static::$instance;
 	}
 
+	/**
+	 * Initialize the plugin.
+	 *
+	 * Instantiates the attachment upload task and hooks into WordPress.
+	 */
 	public function init() {
 		$this->attachment_upload_task = new Attachment_Upload_Task();
 		add_filter( 'wp_generate_attachment_metadata', array( $this, 'upload_attachment_files' ), 10, 2 );
