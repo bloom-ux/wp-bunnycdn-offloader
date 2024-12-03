@@ -129,7 +129,12 @@ class Plugin {
 	 * @return array WordPress attachment metadata
 	 */
 	public function upload_updated_attachment_files( $updated_data, $attachment_id ) {
-		$this->attachment_upload_task->data( array( 'attachment_id' => $attachment_id ) )->dispatch();
+		$this->attachment_upload_task->data(
+			array(
+				'attachment_id' => $attachment_id,
+				'updated_data'  => $updated_data,
+			)
+		)->dispatch();
 		return $updated_data;
 	}
 }

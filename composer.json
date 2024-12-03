@@ -21,7 +21,8 @@
         "php": ">=7.4",
         "composer/installers": "^1||^2",
         "deliciousbrains/wp-background-processing": "^1.3",
-        "bunnycdn/storage": "^3.4"
+        "bunnycdn/storage": "^3.4",
+        "soulseekah/wp-lock": "dev-master"
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1",

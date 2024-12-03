@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b0e43c4a0145ba0c945f6a48a89a0bb7",
+    "content-hash": "7ad2c1d90ddcb97aa35de9e123204430",
     "packages": [
         {
             "name": "bunnycdn/storage",
@@ -780,6 +780,46 @@
                 "source": "https://github.com/ralouphie/getallheaders/tree/develop"
             },
             "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
+            "name": "soulseekah/wp-lock",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/soulseekah/wp-lock.git",
+                "reference": "188e13dacdec526cf2e50a761a1061992d4c2486"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/soulseekah/wp-lock/zipball/188e13dacdec526cf2e50a761a1061992d4c2486",
+                "reference": "188e13dacdec526cf2e50a761a1061992d4c2486",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9",
+                "yoast/phpunit-polyfills": "^1.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/class-wp-lock.php",
+                    "lib/backend/class-wp-lock-backend.php",
+                    "lib/backend/class-wp-lock-backend-flock.php",
+                    "lib/backend/class-wp-lock-backend-wpdb.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "A library for locking and mutexes for the WordPress Core",
+            "homepage": "https://github.com/soulseekah/wp-lock",
+            "support": {
+                "issues": "https://github.com/soulseekah/wp-lock/issues",
+                "source": "https://github.com/soulseekah/wp-lock/tree/master"
+            },
+            "time": "2023-05-10T17:42:22+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
