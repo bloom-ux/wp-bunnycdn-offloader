@@ -4,6 +4,11 @@
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [
+		{
+			"name": "Felipe Lavín Zumaeta",
+			"email": "felipe@bloom.lat",
+			"homepage": "https://bloom.lat"
+		}
     ],
     "autoload": {
         "classmap": [
@@ -30,11 +35,7 @@
         "fix": "phpcbf --standard=WordPress *.php src/",
         "lint": "parallel-lint ./ --blame --exclude vendor --exclude node_modules",
         "sniff": "phpcs --standard=WordPress *.php src/ --cache",
-        "compat": "phpcs --standard=PHPCompatibility *.php src/*.php --ignore=vendor --runtime-set testVersion 7.4 --cache",
-        "post-create-project-cmd": [
-            "npm install",
-            "npx encore production"
-        ]
+        "compat": "phpcs --standard=PHPCompatibility *.php src/*.php --ignore=vendor --runtime-set testVersion 7.4 --cache"
     },
     "config": {
         "allow-plugins": {
