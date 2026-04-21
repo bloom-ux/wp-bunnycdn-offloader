@@ -47,11 +47,6 @@ class Attachment_Upload_Task extends WP_Async_Request {
 	protected function handle() {
 		$attachment_id = filter_input( INPUT_POST, 'attachment_id', FILTER_SANITIZE_NUMBER_INT );
 		$updated_data  = wp_unslash( empty( $_POST['updated_data'] ) ? null : $_POST['updated_data'] ); //phpcs:ignore
-		$this->client  = new Client(
-			getenv( 'BLOOM_BUNNY_STORAGE_API_KEY' ),
-			getenv( 'BLOOM_BUNNY_STORAGE_ZONE' ),
-			getenv( 'BLOOM_BUNNY_STORAGE_REGION' )
-		);
 		if ( empty( $updated_data ) ) {
 			$this->upload_attachment( $attachment_id );
 		} else {
@@ -63,6 +58,22 @@ class Attachment_Upload_Task extends WP_Async_Request {
 				$this->upload_attachment_size( $attachment_id, $updated_size );
 			}
 		}
+	}
+
+	/**
+	 * Get the Bunny client instance
+	 *
+	 * @return Client
+	 */
+	private function get_client() {
+		if ( ! $this->client ) {
+			$this->client = new Client(
+				getenv( 'BLOOM_BUNNY_STORAGE_API_KEY' ),
+				getenv( 'BLOOM_BUNNY_STORAGE_ZONE' ),
+				getenv( 'BLOOM_BUNNY_STORAGE_REGION' )
+			);
+		}
+		return $this->client;
 	}
 
 	/**
@@ -124,7 +135,7 @@ class Attachment_Upload_Task extends WP_Async_Request {
 		$content_dir = WP_CONTENT_DIR;
 		$prefix_dir  = wp_parse_url( getenv( 'BLOOM_BUNNY_PUBLIC_URL' ), PHP_URL_PATH );
 		$remote_path = ( $prefix_dir ? untrailingslashit( $prefix_dir ) : '' ) . str_replace( $content_dir, '', $full_path );
-		$this->client->upload( $full_path, $remote_path );
+		$this->get_client()->upload( $full_path, $remote_path );
 		return true;
 	}
 }
