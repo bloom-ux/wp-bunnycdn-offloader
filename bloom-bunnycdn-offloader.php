@@ -13,6 +13,17 @@ namespace Bloom_UX\Bunny_CDN_Offloader;
 
 if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	add_action(
+		'admin_notices',
+		function () {
+			echo '<div class="notice notice-error"><p>';
+			echo '<strong>Bloom BunnyCDN Offloader:</strong> ';
+			echo 'Dependencias no instaladas. Ejecuta <code>composer install</code> en el directorio del plugin.';
+			echo '</p></div>';
+		}
+	);
+	return;
 }
 
 $offloader_plugin = Plugin::get_instance();

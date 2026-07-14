@@ -28,7 +28,6 @@ class Plugin {
 	const UPLOADED_META_KEY = '_bloom_bunny_uploaded';
 
 	private function __construct() {
-		$this->attachment_upload_task = new Attachment_Upload_Task();
 	}
 
 	/**
@@ -38,7 +37,7 @@ class Plugin {
 	 */
 	public static function get_instance() {
 		if ( is_null( static::$instance ) ) {
-			$classname = get_called_class();
+			$classname        = get_called_class();
 			static::$instance = new $classname();
 		}
 		return static::$instance;
@@ -59,6 +58,10 @@ class Plugin {
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			$this->cli = new CLI();
 			\WP_CLI::add_command( 'bloom-bunny upload', array( $this->cli, 'upload' ) );
+		}
+		if ( is_admin() ) {
+			$site_health = new Site_Health();
+			$site_health->init();
 		}
 	}
 
@@ -85,7 +88,7 @@ class Plugin {
 	 * @return string Filtered URL if file was already uploaded ("https://mysite.b-cdn.net/wp-content...")
 	 */
 	public function filter_attachment_url( string $url, $attachment_id ): string {
-		$in_cdn = (bool) get_post_meta( $attachment_id, static::UPLOADED_META_KEY, true );
+		$in_cdn  = (bool) get_post_meta( $attachment_id, static::UPLOADED_META_KEY, true );
 		$cdn_url = str_replace( content_url(), untrailingslashit( getenv( 'BLOOM_BUNNY_PUBLIC_URL' ) ), $url );
 		return $in_cdn ? $cdn_url : $url;
 	}

@@ -83,6 +83,15 @@ class Attachment_Upload_Task extends WP_Async_Request {
 	 * @return bool True if correctly uploaded, false otherwise.
 	 */
 	public function upload_attachment( int $attachment_id ): bool {
+		$upload_lock = new WP_Lock( "$attachment_id:upload" );
+		$upload_lock->acquire( WP_Lock::WRITE );
+
+		$was_uploaded = (bool) get_post_meta( $attachment_id, Plugin::UPLOADED_META_KEY, true );
+		if ( $was_uploaded ) {
+			$upload_lock->release();
+			return true;
+		}
+
 		global $wpdb;
 		$upload_dir      = wp_upload_dir();
 		$attachment_rel  = get_post_meta( $attachment_id, '_wp_attached_file', true );
@@ -96,6 +105,7 @@ class Attachment_Upload_Task extends WP_Async_Request {
 			}
 		}
 		update_post_meta( $attachment_id, Plugin::UPLOADED_META_KEY, 1 );
+		$upload_lock->release();
 		return true;
 	}
 
