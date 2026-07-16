@@ -41,30 +41,30 @@ class Site_Health {
 	public function add_debug_info( $info ) {
 		$info['bloom-bunnycdn-offloader'] = array(
 			'label'       => 'Bloom BunnyCDN Offloader',
-			'description' => 'Información de diagnóstico para el offloader de BunnyCDN.',
+			'description' => 'Diagnostic information for the BunnyCDN offloader.',
 			'fields'      => array(
 				'vendor_autoload' => array(
-					'label' => 'Dependencias Composer',
+					'label' => 'Composer Dependencies',
 					'value' => $this->check_vendor_autoload(),
 				),
 				'env_variables'   => array(
-					'label' => 'Variables de entorno',
+					'label' => 'Environment Variables',
 					'value' => $this->check_env_variables(),
 				),
 				'loopback_test'   => array(
-					'label' => 'Test de loopback',
+					'label' => 'Loopback Test',
 					'value' => $this->check_loopback(),
 				),
 				'content_url'     => array(
-					'label' => 'URL de contenido (content_url)',
+					'label' => 'Content URL (content_url)',
 					'value' => content_url(),
 				),
 				'site_url'        => array(
-					'label' => 'URL del sitio (site_url)',
+					'label' => 'Site URL (site_url)',
 					'value' => site_url(),
 				),
 				'admin_ajax_url'  => array(
-					'label' => 'URL de admin-ajax',
+					'label' => 'Admin AJAX URL',
 					'value' => admin_url( 'admin-ajax.php' ),
 				),
 			),
@@ -83,14 +83,14 @@ class Site_Health {
 		$has_classes   = class_exists( Plugin::class );
 
 		if ( $has_classes ) {
-			return 'OK - Clases disponibles';
+			return 'OK - Classes available';
 		}
 
 		if ( $has_local && ! $has_classes ) {
-			return 'ERROR - vendor/autoload.php existe pero las clases no se cargaron correctamente';
+			return 'ERROR - vendor/autoload.php exists but classes were not loaded correctly';
 		}
 
-		return 'ERROR - vendor/autoload.php no encontrado. Ejecutar composer install.';
+		return 'ERROR - vendor/autoload.php not found. Run composer install.';
 	}
 
 	/**
@@ -114,10 +114,10 @@ class Site_Health {
 		}
 
 		if ( empty( $missing ) ) {
-			return 'OK - Todas las variables de entorno configuradas';
+			return 'OK - All environment variables configured';
 		}
 
-		return 'ERROR - Variables faltantes: ' . implode( ', ', $missing );
+		return 'ERROR - Missing variables: ' . implode( ', ', $missing );
 	}
 
 	/**
@@ -145,9 +145,9 @@ class Site_Health {
 
 		$code = wp_remote_retrieve_response_code( $response );
 		if ( 200 === $code ) {
-			return "OK - Loopback funciona (HTTP $code)";
+			return "OK - Loopback works (HTTP $code)";
 		}
 
-		return "ERROR - Respuesta HTTP inesperada: $code";
+		return "ERROR - Unexpected HTTP response: $code";
 	}
 }

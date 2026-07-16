@@ -21,7 +21,7 @@ if ( ! class_exists( Plugin::class ) ) {
 		function () {
 			echo '<div class="notice notice-error"><p>';
 			echo '<strong>Bloom BunnyCDN Offloader:</strong> ';
-			echo 'Clases necesarias no encontradas. Ejecuta <code>composer install</code> en el directorio del plugin o asegúrate de que las dependencias estén instaladas en el proyecto principal.';
+			echo 'Required classes not found. Run <code>composer install</code> in the plugin directory or ensure dependencies are installed in the main project.';
 			echo '</p></div>';
 		}
 	);

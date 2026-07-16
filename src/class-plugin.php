@@ -44,11 +44,29 @@ class Plugin {
 	}
 
 	/**
+	 * Check if the offloader is disabled via constant or environment variable.
+	 *
+	 * @return bool
+	 */
+	private function is_disabled(): bool {
+		if ( defined( 'BLOOM_BUNNY_OFFLOADER_DISABLE' ) && BLOOM_BUNNY_OFFLOADER_DISABLE ) {
+			return true;
+		}
+		$env = getenv( 'BLOOM_BUNNY_OFFLOADER_DISABLE' );
+		return ! empty( $env ) && filter_var( $env, FILTER_VALIDATE_BOOLEAN );
+	}
+
+	/**
 	 * Initialize the plugin.
 	 *
 	 * Instantiates the attachment upload task and hooks into WordPress.
+	 * If BLOOM_BUNNY_OFFLOADER_DISABLE is set, skips registration of hooks
+	 * and WP-CLI commands.
 	 */
 	public function init() {
+		if ( $this->is_disabled() ) {
+			return;
+		}
 		$this->attachment_upload_task = new Attachment_Upload_Task();
 		add_filter( 'wp_generate_attachment_metadata', array( $this, 'upload_attachment_files' ), 10, 2 );
 		add_filter( 'wp_update_attachment_metadata', array( $this, 'upload_updated_attachment_files' ), 10, 2 );
