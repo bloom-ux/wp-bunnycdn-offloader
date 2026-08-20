@@ -134,7 +134,6 @@ class Site_Health {
 				'body'      => array(
 					'action' => 'bloom_bunnycdn_offloader_loopback_test',
 				),
-				'timeout'   => 5,
 				'sslverify' => false,
 			)
 		);
