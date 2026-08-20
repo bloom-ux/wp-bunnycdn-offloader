@@ -64,15 +64,14 @@ class Plugin {
 	 * and WP-CLI commands.
 	 */
 	public function init() {
-		if ( $this->is_disabled() ) {
-			return;
-		}
 		$this->attachment_upload_task = new Attachment_Upload_Task();
-		add_filter( 'wp_generate_attachment_metadata', array( $this, 'upload_attachment_files' ), 10, 2 );
-		add_filter( 'wp_update_attachment_metadata', array( $this, 'upload_updated_attachment_files' ), 10, 2 );
+		if ( ! $this->is_disabled() ) {
+			add_filter( 'wp_generate_attachment_metadata', array( $this, 'upload_attachment_files' ), 10, 2 );
+			add_filter( 'wp_update_attachment_metadata', array( $this, 'upload_updated_attachment_files' ), 10, 2 );
+			add_action( 'add_attachment', array( $this, 'upload_attachment' ), 10, 1 );
+		}
 		add_filter( 'wp_get_attachment_url', array( $this, 'filter_attachment_url' ), 10, 2 );
 		add_filter( 'wp_calculate_image_srcset', array( $this, 'filter_srcset_urls' ), 10, 5 );
-		add_action( 'add_attachment', array( $this, 'upload_attachment' ), 10, 1 );
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			$this->cli = new CLI();
 			\WP_CLI::add_command( 'bloom-bunny upload', array( $this->cli, 'upload' ) );
@@ -98,6 +97,9 @@ class Plugin {
 		return true;
 	}
 
+	private $relativize = null;
+	private $content_url_base = null;
+
 	/**
 	 * Filters the attachment URL to point to the CDN.
 	 *
@@ -107,7 +109,15 @@ class Plugin {
 	 */
 	public function filter_attachment_url( string $url, $attachment_id ): string {
 		$in_cdn  = (bool) get_post_meta( $attachment_id, static::UPLOADED_META_KEY, true );
-		$cdn_url = str_replace( content_url(), untrailingslashit( getenv( 'BLOOM_BUNNY_PUBLIC_URL' ) ), $url );
+		if ( is_null( $this->relativize ) ) {
+			$this->content_url_base = wp_parse_url( content_url(), PHP_URL_PATH );
+			$this->relativize = ! empty( $this->content_url_base );
+		}
+		if ( $this->relativize ) {
+			$cdn_url = esc_url( untrailingslashit( getenv( 'BLOOM_BUNNY_PUBLIC_URL' ) ) . str_replace( $this->content_url_base, '', wp_parse_url( $url, PHP_URL_PATH ) ) );
+		} else {
+			$cdn_url = esc_url( untrailingslashit( getenv( 'BLOOM_BUNNY_PUBLIC_URL' ) ) . wp_parse_url( $url, PHP_URL_PATH ) );
+		}
 		return $in_cdn ? $cdn_url : $url;
 	}
 
